@@ -7,6 +7,7 @@ macro_rules! inherent_borsh_ser {
         /// even with conflicting versions of borsh in downstream projects.
         ///
         /// And also pass writer by value just to be more inline with rust standards
+        #[inline]
         pub fn borsh_ser<W: borsh::io::Write>(&self, mut writer: W) -> borsh::io::Result<()> {
             <Self as borsh::BorshSerialize>::serialize(self, &mut writer)
         }
@@ -20,6 +21,7 @@ macro_rules! inherent_borsh_de {
         /// even with conflicting versions of borsh in downstream projects.
         ///
         /// And also pass reader by value just to be more inline with rust standards
+        #[inline]
         pub fn borsh_de<R: borsh::io::Read>(mut reader: R) -> borsh::io::Result<Self> {
             <Self as borsh::BorshDeserialize>::deserialize_reader(&mut reader)
         }
@@ -30,5 +32,94 @@ macro_rules! inherent_borsh_serde {
     () => {
         inherent_borsh_ser!();
         inherent_borsh_de!();
+    };
+}
+
+macro_rules! impl_get_le {
+    ($field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $field(&self) -> $t {
+            <$t>::from_le_bytes(self.$field)
+        }
+    };
+}
+
+macro_rules! impl_set_le {
+    ($setter:ident, $field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $setter(&mut self, val: $t) {
+            self.$field = val.to_le_bytes();
+        }
+    };
+}
+
+macro_rules! impl_with_le {
+    ($with:ident, $field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $with(mut self, val: $t) -> Self {
+            self.$field = val.to_le_bytes();
+            self
+        }
+    };
+}
+
+macro_rules! impl_set_with_get_le {
+    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set_le!($setter, $field, $t);
+        impl_with_le!($with, $field, $t);
+        impl_get_le!($field, $t);
+    };
+}
+
+macro_rules! impl_get_ref {
+    ($field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $field(&self) -> &$t {
+            &self.$field
+        }
+    };
+}
+
+macro_rules! impl_get {
+    ($field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $field(&self) -> $t {
+            self.$field
+        }
+    };
+}
+
+macro_rules! impl_set {
+    ($setter:ident, $field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $setter(&mut self, val: $t) {
+            self.$field = val;
+        }
+    };
+}
+
+macro_rules! impl_with {
+    ($with:ident, $field:ident, $t:ty) => {
+        #[inline]
+        pub const fn $with(mut self, val: $t) -> Self {
+            self.$field = val;
+            self
+        }
+    };
+}
+
+macro_rules! impl_set_with_get_ref {
+    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set!($setter, $field, $t);
+        impl_with!($with, $field, $t);
+        impl_get_ref!($field, $t);
+    };
+}
+
+macro_rules! impl_set_with_get {
+    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set!($setter, $field, $t);
+        impl_with!($with, $field, $t);
+        impl_get!($field, $t);
     };
 }
