@@ -6,3 +6,9 @@ edition.workspace = true
 [dependencies]
 borsh = { workspace = true, features = ["derive"] }
 const-crypto = { workspace = true }
+
+[dev-dependencies]
+bs58 = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+solana-account-decoder-client-types = { workspace = true }
