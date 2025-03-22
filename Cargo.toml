@@ -12,5 +12,6 @@ edition = "2021"
 # In general, keep default-features = false in workspace
 # and enable individual features in indiv crates
 borsh = { version = "^1", default-features = false }
+const-crypto = { version = "^0.3", default-features = false }
 
 # workspace members

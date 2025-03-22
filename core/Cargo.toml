@@ -1,7 +1,8 @@
 [package]
-name = "sanctum-solido-legacy-core"
+name = "solido-legacy-core"
 version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
 borsh = { workspace = true, features = ["derive"] }
+const-crypto = { workspace = true }
