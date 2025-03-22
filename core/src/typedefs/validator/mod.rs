@@ -6,6 +6,8 @@ mod seed_range;
 
 pub use seed_range::*;
 
+use crate::{validator_stake_seeds, ValidatorStakeSeeds};
+
 #[repr(C)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, BorshDeserialize, BorshSerialize)]
 pub struct Validator {
@@ -18,6 +20,16 @@ pub struct Validator {
     active: bool,
 }
 
+impl Validator {
+    /// Returns the seeds to find the PDA of the validator
+    /// stake account to service stsol withdrawals from
+    #[inline]
+    pub const fn withdraw_stake_acc_seeds(&self) -> ValidatorStakeSeeds<'_> {
+        validator_stake_seeds(&self.vote_account_address, self.stake_seeds.begin())
+    }
+}
+
+/// Getters and setters
 impl Validator {
     impl_set_with_get_ref!(
         set_vote_account_address,

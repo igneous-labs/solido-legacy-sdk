@@ -23,5 +23,6 @@ serde_json = { version = "^1", default-features = false }
 # group them together to ensure same version throughout
 # and to deal with dependency hell more easily
 solana-account-decoder-client-types = { version = "^2", default-features = false }
+solana-pubkey = { version = "^2", default-features = false }
 
 # workspace members
