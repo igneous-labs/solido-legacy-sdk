@@ -6,7 +6,7 @@ use solana_account::Account;
 use solana_instruction::Instruction;
 use solana_pubkey::Pubkey;
 use solido_legacy_core::{
-    ValidatorList, WithdrawV2IxData, WithdrawV2IxKeysOwned, PROGRAM_ID, STAKE_PROGRAM,
+    Lido, ValidatorList, WithdrawV2IxData, WithdrawV2IxKeysOwned, PROGRAM_ID, STAKE_PROGRAM,
     WITHDRAW_V2_IX_IS_SIGNER, WITHDRAW_V2_IX_IS_WRITER,
 };
 
@@ -61,8 +61,12 @@ fn withdraw_v2_fixture() {
     const AMOUNT: u64 = 1_000_000_000;
 
     let account = KeyedUiAccount::from_test_fixtures_file("validator-list");
-    let data = account.account_data();
-    let val_list = ValidatorList::deserialize(data.as_slice()).unwrap();
+    let val_list_data = account.account_data();
+    let val_list = ValidatorList::deserialize(val_list_data.as_slice()).unwrap();
+
+    let account = KeyedUiAccount::from_test_fixtures_file("lido");
+    let lido = Lido::borsh_de(account.account_data().as_slice()).unwrap();
+    let quoted_stake_lamports = lido.exchange_rate.quote_withdraw_stake(AMOUNT).unwrap();
 
     let [user, burn_stsol_from, split_stake_to] = core::array::from_fn(|_i| Pubkey::new_unique());
     let mollusk = mollusk_lido_prog();
@@ -86,7 +90,23 @@ fn withdraw_v2_fixture() {
         ])
         .collect();
 
-    let InstructionResult { raw_result, .. } = mollusk.process_instruction_chain(ixs, &accounts);
+    let InstructionResult {
+        raw_result,
+        resulting_accounts,
+        ..
+    } = mollusk.process_instruction_chain(ixs, &accounts);
 
     raw_result.unwrap();
+
+    let split_stake_to_lamports = resulting_accounts
+        .iter()
+        .find(|(pk, _a)| *pk == split_stake_to)
+        .unwrap()
+        .1
+        .lamports;
+
+    assert_eq!(
+        split_stake_to_lamports,
+        quoted_stake_lamports + STAKE_ACC_RENT_EXEMPT_LAMPORTS
+    );
 }
