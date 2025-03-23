@@ -45,9 +45,9 @@ macro_rules! impl_get_le {
 }
 
 macro_rules! impl_set_le {
-    ($setter:ident, $field:ident, $t:ty) => {
+    ($set:ident, $field:ident, $t:ty) => {
         #[inline]
-        pub const fn $setter(&mut self, val: $t) {
+        pub const fn $set(&mut self, val: $t) {
             self.$field = val.to_le_bytes();
         }
     };
@@ -64,8 +64,8 @@ macro_rules! impl_with_le {
 }
 
 macro_rules! impl_set_with_get_le {
-    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
-        impl_set_le!($setter, $field, $t);
+    ($set:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set_le!($set, $field, $t);
         impl_with_le!($with, $field, $t);
         impl_get_le!($field, $t);
     };
@@ -90,9 +90,9 @@ macro_rules! impl_get {
 }
 
 macro_rules! impl_set {
-    ($setter:ident, $field:ident, $t:ty) => {
+    ($set:ident, $field:ident, $t:ty) => {
         #[inline]
-        pub const fn $setter(&mut self, val: $t) {
+        pub const fn $set(&mut self, val: $t) {
             self.$field = val;
         }
     };
@@ -109,17 +109,31 @@ macro_rules! impl_with {
 }
 
 macro_rules! impl_set_with_get_ref {
-    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
-        impl_set!($setter, $field, $t);
+    ($set:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set!($set, $field, $t);
         impl_with!($with, $field, $t);
         impl_get_ref!($field, $t);
     };
 }
 
 macro_rules! impl_set_with_get {
-    ($setter:ident, $with:ident, $field:ident, $t:ty) => {
-        impl_set!($setter, $field, $t);
+    ($set:ident, $with:ident, $field:ident, $t:ty) => {
+        impl_set!($set, $field, $t);
         impl_with!($with, $field, $t);
         impl_get!($field, $t);
     };
+}
+
+pub const fn const_assign_byte_arr<const A: usize, const START: usize, const LEN: usize>(
+    arr: &mut [u8; A],
+    val: [u8; LEN],
+) {
+    const {
+        assert!(START + LEN <= A);
+    }
+    // safety: bounds checked at comptime above
+    unsafe {
+        // guarantee nonoverlapping due to `&mut`
+        core::ptr::copy_nonoverlapping(val.as_ptr(), arr.as_ptr().add(START).cast_mut(), LEN);
+    }
 }

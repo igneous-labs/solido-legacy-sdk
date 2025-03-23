@@ -6,10 +6,15 @@ edition.workspace = true
 [dependencies]
 borsh = { workspace = true, features = ["derive"] }
 const-crypto = { workspace = true }
+generic-array-struct = { workspace = true }
 
 [dev-dependencies]
 bs58 = { workspace = true }
+mollusk-svm = { workspace = true, features = ["all-builtins"] } # needed for stake program
+mollusk-svm-programs-token = { workspace = true, features = ["token"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
+solana-account = { workspace = true }
 solana-account-decoder-client-types = { workspace = true }
+solana-instruction = { workspace = true, features = ["std"] }
 solana-pubkey = { workspace = true, features = ["curve25519"] }

@@ -12,6 +12,7 @@ fn lido_serde_roundtrip() {
     // sample some fields
     assert_eq!(deser.account_type, AccountType::Lido);
     assert_eq!(deser.validator_list, VALIDATOR_LIST_ADDR);
+    assert_eq!(deser.exchange_rate.computed_in_epoch, 758);
 
     let mut ser = Vec::new();
     deser.borsh_ser(&mut ser).unwrap();

@@ -13,16 +13,21 @@ edition = "2021"
 # and enable individual features in indiv crates
 borsh = { version = "^1", default-features = false }
 const-crypto = { version = "^0.3", default-features = false }
+generic-array-struct = { version = "^0.2", default-features = false }
 
 # dev deps
 bs58 = { version = "^0.5", default-features = false }
 serde = { version = "^1", default-features = false }
 serde_json = { version = "^1", default-features = false }
 
-# solana deps
+# solana dev deps
 # group them together to ensure same version throughout
 # and to deal with dependency hell more easily
+mollusk-svm-programs-token = { version = "^0.1", default-features = false }
+mollusk-svm = { version = "^0.1", default-features = false }
+solana-account = { version = "^2", default-features = false }
 solana-account-decoder-client-types = { version = "^2", default-features = false }
+solana-instruction = { version = "^2", default-features = false }
 solana-pubkey = { version = "^2", default-features = false }
 
 # workspace members

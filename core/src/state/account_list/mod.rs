@@ -2,9 +2,11 @@ use core::num::TryFromIntError;
 
 use borsh::{BorshDeserialize, BorshSerialize};
 
-use crate::{ListHeader, Validator};
+use crate::ListHeader;
 
-pub type ValidatorList<'a> = AccountList<'a, Validator>;
+mod validator_list;
+
+pub use validator_list::*;
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct AccountList<'a, T> {

@@ -1,10 +1,7 @@
 use solana_pubkey::Pubkey;
 use solido_legacy_core::ValidatorList;
 
-use crate::common::{find_withdraw_stake_acc, KeyedUiAccount};
-
-const LARGEST_VAL_VOTE: [u8; 32] =
-    const_crypto::bs58::decode_pubkey("DdCNGDpP7qMgoAy6paFzhhak2EeyCZcgjH7ak5u5v28m");
+use crate::common::{find_withdraw_stake_acc, KeyedUiAccount, LARGEST_VAL_VOTE};
 
 #[test]
 fn withdraw_stake_acc_sanity() {
