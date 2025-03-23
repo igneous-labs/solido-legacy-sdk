@@ -37,20 +37,31 @@ impl KeyedUiAccount {
     }
 }
 
+pub fn lido_mainnet_update_exchange_rate_accounts() -> impl Iterator<Item = (Pubkey, Account)> {
+    test_fixtures_accounts(["lido", "stsol", "validator-list", "reserve"].as_slice())
+}
+
 pub fn lido_mainnet_withdraw_accounts() -> impl Iterator<Item = (Pubkey, Account)> {
-    [
-        "largest-vsa",
-        "lido",
-        "stsol",
-        "validator-list",
-        "largest-vote",
-    ]
-    .into_iter()
-    .map(|fname| {
+    test_fixtures_accounts(
+        [
+            "largest-vsa",
+            "lido",
+            "stsol",
+            "validator-list",
+            "largest-vote",
+        ]
+        .as_slice(),
+    )
+    .chain([(Pubkey::new_from_array(STAKE_AUTH_PDA), Account::default())])
+}
+
+fn test_fixtures_accounts<'a>(
+    fnames: &'a [&'a str],
+) -> impl Iterator<Item = (Pubkey, Account)> + 'a {
+    fnames.iter().map(|fname| {
         let KeyedUiAccount { pubkey, account } = KeyedUiAccount::from_test_fixtures_file(fname);
         (pubkey.parse().unwrap(), account.decode().unwrap())
     })
-    .chain([(Pubkey::new_from_array(STAKE_AUTH_PDA), Account::default())])
 }
 
 pub fn payer_account(lamports: u64) -> Account {

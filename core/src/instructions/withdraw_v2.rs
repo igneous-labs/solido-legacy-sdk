@@ -5,8 +5,6 @@ use crate::{
     STSOL_MINT_ADDR, SYSTEM_PROGRAM, SYSVAR_CLOCK, TOKENKEG_PROGRAM, VALIDATOR_LIST_ADDR,
 };
 
-pub const WITHDRAW_V2_IX_DISCM: u8 = 23;
-
 #[generic_array_struct(pub)]
 #[repr(transparent)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
@@ -119,6 +117,8 @@ impl WithdrawV2IxKeys<'_> {
             .const_with_token_prog(&TOKENKEG_PROGRAM)
     }
 }
+
+pub const WITHDRAW_V2_IX_DISCM: u8 = 23;
 
 pub const WITHDRAW_V2_IX_DATA_LEN: usize = 13;
 

@@ -14,10 +14,13 @@ pub fn mollusk_lido_prog() -> Mollusk {
         &std::fs::read(test_fixtures_dir().join("solido.so")).unwrap(),
         &Pubkey::new_from_array(SOLIDO_PROG_OWNER),
     );
-    res.sysvars.clock.epoch = MAINNET_EXCHANGE_RATE_COMPUTED_IN_EPOCH;
-    res.sysvars.clock.slot = 432_000 * MAINNET_EXCHANGE_RATE_COMPUTED_IN_EPOCH + 69;
+    warp_to_epoch(&mut res, MAINNET_EXCHANGE_RATE_COMPUTED_IN_EPOCH);
     res.feature_set
         .deactivate(&Pubkey::new_from_array(MIN_1_SOL_DELEGATION_FEATURE_ID));
     mollusk_svm_programs_token::token::add_program(&mut res);
     res
+}
+
+pub fn warp_to_epoch(mollusk: &mut Mollusk, epoch: u64) {
+    mollusk.sysvars.warp_to_slot(432_000 * epoch + 69);
 }

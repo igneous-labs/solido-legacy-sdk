@@ -20,10 +20,21 @@ pub const STAKE_AUTH_PDA: [u8; 32] = STAKE_AUTH_PDA_TUP.0;
 pub const STAKE_AUTH_PDA_BUMP: u8 = STAKE_AUTH_PDA_TUP.1;
 pub const STAKE_AUTH_PDA_STR: &str = bs58::encode_pubkey(&STAKE_AUTH_PDA).str();
 
+const RESERVE_PDA_TUP: ([u8; 32], u8) = derive_program_address(
+    &[LIDO_STATE_ADDR.as_slice(), b"reserve_account"],
+    &PROGRAM_ID,
+);
+pub const RESERVE_PDA: [u8; 32] = RESERVE_PDA_TUP.0;
+pub const RESERVE_PDA_BUMP: u8 = RESERVE_PDA_TUP.1;
+pub const RESERVE_PDA_STR: &str = bs58::encode_pubkey(&RESERVE_PDA).str();
+
 // solana system-wide consts
 
 pub const SYSVAR_CLOCK: [u8; 32] =
     bs58::decode_pubkey("SysvarC1ock11111111111111111111111111111111");
+
+pub const SYSVAR_RENT: [u8; 32] =
+    bs58::decode_pubkey("SysvarRent111111111111111111111111111111111");
 
 pub const SYSTEM_PROGRAM: [u8; 32] = bs58::decode_pubkey("11111111111111111111111111111111");
 
