@@ -855,9 +855,9 @@ dependencies = [
 
 [[package]]
 name = "generic-array-struct"
-version = "0.2.0"
+version = "0.3.0-bc"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ba61285dacb37bba74d5b9e633fdecc43b84a2f102dac81286a383c0cd0c8f5"
+checksum = "3313f0db62e8711fcace7bf202025b00efe5ab9c8d35209241b79c877f72ba6f"
 dependencies = [
  "heck",
  "quote",
