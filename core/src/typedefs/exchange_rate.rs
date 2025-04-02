@@ -1,4 +1,5 @@
 use borsh::{BorshDeserialize, BorshSerialize};
+use sanctum_u64_ratio::{Floor, Ratio};
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, BorshDeserialize, BorshSerialize)]
 pub struct ExchangeRate {
@@ -13,15 +14,20 @@ impl ExchangeRate {
     ///
     /// Returns None on arithmetic failure
     #[inline]
-    pub fn quote_withdraw_stake(&self, stsol_amount: u64) -> Option<u64> {
-        if self.st_sol_supply == 0 {
+    pub const fn quote_withdraw_stake(&self, stsol_amount: u64) -> Option<u64> {
+        let ratio = self.sol_balance_over_st_sol_supply();
+        if ratio.0.is_zero() {
             return None;
         }
-        // unchecked mul: 2 u64s will not overflow u128
-        // unchecked div: nonzero denom checked above
-        let res = (u128::from(stsol_amount) * u128::from(self.sol_balance))
-            / u128::from(self.st_sol_supply);
-        res.try_into().ok()
+        ratio.apply(stsol_amount)
+    }
+
+    #[inline]
+    pub const fn sol_balance_over_st_sol_supply(&self) -> Floor<Ratio<u64, u64>> {
+        Floor(Ratio {
+            n: self.sol_balance,
+            d: self.st_sol_supply,
+        })
     }
 }
 

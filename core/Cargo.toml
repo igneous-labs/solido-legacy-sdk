@@ -7,6 +7,7 @@ edition.workspace = true
 borsh = { workspace = true, features = ["derive"] }
 const-crypto = { workspace = true }
 generic-array-struct = { workspace = true }
+sanctum-u64-ratio = { workspace = true }
 
 [dev-dependencies]
 bs58 = { workspace = true }
