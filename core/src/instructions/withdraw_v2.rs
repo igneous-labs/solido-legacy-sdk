@@ -129,11 +129,12 @@ pub struct WithdrawV2IxData([u8; WITHDRAW_V2_IX_DATA_LEN]);
 impl WithdrawV2IxData {
     #[inline]
     pub const fn new(amount: u64, validator_index: u32) -> Self {
-        let mut res = [0u8; WITHDRAW_V2_IX_DATA_LEN];
-        const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 0, 1>(&mut res, [WITHDRAW_V2_IX_DISCM]);
-        const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 1, 8>(&mut res, amount.to_le_bytes());
-        const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 9, 4>(
-            &mut res,
+        let res = [0u8; WITHDRAW_V2_IX_DATA_LEN];
+        let res =
+            const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 0, 1>(res, [WITHDRAW_V2_IX_DISCM]);
+        let res = const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 1, 8>(res, amount.to_le_bytes());
+        let res = const_assign_byte_arr::<WITHDRAW_V2_IX_DATA_LEN, 9, 4>(
+            res,
             validator_index.to_le_bytes(),
         );
         Self(res)

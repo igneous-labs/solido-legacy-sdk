@@ -47,7 +47,7 @@ macro_rules! impl_get_le {
 macro_rules! impl_set_le {
     ($set:ident, $field:ident, $t:ty) => {
         #[inline]
-        pub const fn $set(&mut self, val: $t) {
+        pub fn $set(&mut self, val: $t) {
             self.$field = val.to_le_bytes();
         }
     };
@@ -92,7 +92,7 @@ macro_rules! impl_get {
 macro_rules! impl_set {
     ($set:ident, $field:ident, $t:ty) => {
         #[inline]
-        pub const fn $set(&mut self, val: $t) {
+        pub fn $set(&mut self, val: $t) {
             self.$field = val;
         }
     };
@@ -125,15 +125,16 @@ macro_rules! impl_set_with_get {
 }
 
 pub const fn const_assign_byte_arr<const A: usize, const START: usize, const LEN: usize>(
-    arr: &mut [u8; A],
+    mut arr: [u8; A],
     val: [u8; LEN],
-) {
+) -> [u8; A] {
     const {
         assert!(START + LEN <= A);
     }
     // safety: bounds checked at comptime above
     unsafe {
         // guarantee nonoverlapping due to `&mut`
-        core::ptr::copy_nonoverlapping(val.as_ptr(), arr.as_ptr().add(START).cast_mut(), LEN);
+        core::ptr::copy_nonoverlapping(val.as_ptr(), arr.as_mut_ptr().add(START).cast(), LEN);
     }
+    arr
 }
