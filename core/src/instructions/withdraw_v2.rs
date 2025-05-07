@@ -5,7 +5,7 @@ use crate::{
     STSOL_MINT_ADDR, SYSTEM_PROGRAM, SYSVAR_CLOCK, TOKENKEG_PROGRAM, VALIDATOR_LIST_ADDR,
 };
 
-#[generic_array_struct(pub)]
+#[generic_array_struct(builder pub)]
 #[repr(transparent)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct WithdrawV2IxAccs<T> {

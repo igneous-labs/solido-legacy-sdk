@@ -5,7 +5,7 @@ use crate::{
     VALIDATOR_LIST_ADDR,
 };
 
-#[generic_array_struct(pub)]
+#[generic_array_struct(builder pub)]
 #[repr(transparent)]
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct UpdateExchangeRateV2IxAccs<T> {
