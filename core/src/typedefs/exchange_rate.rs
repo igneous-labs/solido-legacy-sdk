@@ -1,6 +1,8 @@
 use borsh::{BorshDeserialize, BorshSerialize};
 use sanctum_u64_ratio::{Floor, Ratio};
 
+use crate::LidoError;
+
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq, Hash, BorshDeserialize, BorshSerialize)]
 pub struct ExchangeRate {
     pub computed_in_epoch: u64,
@@ -14,12 +16,15 @@ impl ExchangeRate {
     ///
     /// Returns None on arithmetic failure
     #[inline]
-    pub const fn quote_withdraw_stake(&self, stsol_amount: u64) -> Option<u64> {
+    pub const fn quote_withdraw_stake(&self, stsol_amount: u64) -> Result<u64, LidoError> {
         let ratio = self.sol_balance_over_st_sol_supply();
         if ratio.0.is_zero() {
-            return None;
+            return Err(LidoError::CalculationFailure);
         }
-        ratio.apply(stsol_amount)
+        match ratio.apply(stsol_amount) {
+            Some(v) => Ok(v),
+            None => Err(LidoError::CalculationFailure),
+        }
     }
 
     #[inline]
